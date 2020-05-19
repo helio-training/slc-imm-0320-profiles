@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Layout from '../config/Layout';
-import PokeTable from '../components/PokeTable';
+import PokeTable from '../components/pokemon/PokeTable';
 
 const useStyles = makeStyles((theme) => ({
     root: {

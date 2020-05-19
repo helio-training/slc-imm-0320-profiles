@@ -8,8 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { PokemonContext } from '../context/poke-context';
-import DeletePoke from '../components/DeletePoke';
+import { PokemonContext } from '../../context/poke-context';
+import DeletePoke from './DeletePoke';
 
 const useStyles = makeStyles({
     table: {
