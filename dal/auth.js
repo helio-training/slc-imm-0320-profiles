@@ -7,31 +7,30 @@ const colName = 'users';
 const settings = { useUnifiedTopology: true };
 
 // //READ functions
-// const getRelatives = () => {
-//     const iou = new Promise((resolve, reject) => {
-//         MongoClient.connect(DB_URL, settings, function (err, client) {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 console.log('Connected to DB Server for READ');
-//                 const db = client.db(dbName);
-//                 const collection = db.collection(colName);
-//                 collection.find({}).toArray(function (err, docs) {
-//                     if (err) {
-//                         reject(err);
-//                     } else {
-//                         // console.log(docs);
-//                         resolve(docs);
-//                         client.close();
-//                     };
-//                 });
-//             };
-//         });
-//     });
-//     return iou;
-// };
-// const getRelativeById = (id) => { };
-// const getRelativeByValue = (key, value) => { };
+const getUserByValue = (key, value) => {
+    const iou = new Promise((resolve, reject) => {
+        MongoClient.connect(DB_URL, settings, function (err, client) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Connected to DB Server for READ');
+                const db = client.db(dbName);
+                const collection = db.collection(colName);
+                collection.find({ [key] : value }).toArray(function (err, docs) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        // console.log(docs);
+                        resolve(docs);
+                        client.close();
+                    };
+                });
+            };
+        });
+    });
+    return iou;
+};
+
 //CREATE function
 const registerUser = (user) => {
     const iou = new Promise((resolve, reject) => {
@@ -110,9 +109,7 @@ const registerUser = (user) => {
 
 // Still needs Exports
 module.exports = {
-    // getRelatives,
-    // getRelativeById,
-    // getRelativeByValue,
+    getUserByValue,
     registerUser,
     // updateRelativeValues,
     // updateRelative,
