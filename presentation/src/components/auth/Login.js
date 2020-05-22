@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react'
+import { setToken } from '../../config/auth';
 
+const style = {
+    marginLeft : '3px',
+    color: 'red'
+}
 // HandleSubmit saves to LocalStorage if remembered
-// OnMount check LocalStorage for remembered Username
+// OnMount check LocalStorage for remembered Email
 export const Login = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remembered, setRemembered] = useState(false);
+    const [msg, setMsg] = useState('');
     
     useEffect(() => {
-        const localUsername = localStorage.getItem('username');
-        if(localUsername){
-            setUsername(localUsername);
+        const localEmail = localStorage.getItem('email');
+        if(localEmail){
+            setEmail(localEmail);
             setRemembered(true);
         }
     }, [])
@@ -20,26 +26,42 @@ export const Login = () => {
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(username, password, remembered);
+        setMsg('');
         if(remembered){
-            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
         } else {
-            localStorage.removeItem('username');
+            localStorage.removeItem('email');
         }
+        fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        }).then(response => {
+            if(response.status === 200) {
+                setToken(response.headers.get('authentication'));
+                alert('Logged In!');
+            } else{
+                setMsg('Login Failed');
+            }
+        })
     }
 
     return (
         <form onSubmit={handleSubmit}>
             <input 
                 type="text" 
-                value={username}
-                placeholder="Username"
-                onChange={({target}) => setUsername(target.value)}/>
+                value={email}
+                placeholder="Email"
+                onChange={({target}) => setEmail(target.value)}
+                required/>
             <input
                 type="password"
                 value={password}
                 placeholder="Password"
-                onChange={({ target }) => setPassword(target.value)}/>
+                onChange={({ target }) => setPassword(target.value)}
+                required/>
             <input 
                 type="checkbox"  
                 name="remember"
@@ -47,6 +69,7 @@ export const Login = () => {
                 onChange={toggle} />
             <label for="remember">Remember Me</label>
             <input type="submit" value="Login"/>
+            <span style={style}>{msg}</span>
         </form>
     )
 }

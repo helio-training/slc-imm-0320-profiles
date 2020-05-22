@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { 
+  BrowserRouter as Router, 
+  Switch, 
+  Route,
+  Redirect 
+} from 'react-router-dom';
+import { isLoggedIn } from './config/auth';
 
 import Home from './pages/Home';
 import Pokemon from './pages/Pokemon';
@@ -22,10 +28,34 @@ function App() {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route exact path='/pokemon' component={Pokemon} />
-          <Route exact path='/accounts' component={Accounts} />
+          <PrivateRoute exact path='/accounts'>
+            <Accounts/>
+          </PrivateRoute>
         </Switch>
       </Router>
     </Provider>
+  );
+}
+
+// A wrapper for <Route> that redirects to the login
+// screen if you're not yet authenticated.
+const PrivateRoute = ({ children, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        isLoggedIn() ? (
+          children
+        ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: { from: location }
+              }}
+            />
+          )
+      }
+    />
   );
 }
 

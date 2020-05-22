@@ -30,13 +30,14 @@ router.post('/login', async function (req, res) {
                     res.status(401).send('Login Failed');
                     console.log(`Provided password for ${body.email} doesn't match `);
                 } else {
-                    jwt.sign({ expires: '2020-06-30', _id: dbUser[0]._id }, 
+                    jwt.sign({ _id: dbUser[0]._id }, 
                         privateKey, 
                         { algorithm: 'HS512' }, 
                         function (err, token) {
                             if(err) throw err;
                             console.log(body.email, token);
                             res.set('authentication', token);
+                            res.set('Access-Control-Expose-Headers', 'authentication');
                             res.send();
                         }
                     ); 

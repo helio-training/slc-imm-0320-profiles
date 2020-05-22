@@ -20,6 +20,8 @@ import StorageIcon from '@material-ui/icons/Storage';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import { Link } from 'react-router-dom';
 
+import { isLoggedIn, logout } from '../config/auth';
+
 const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) => ({
@@ -111,6 +113,11 @@ export default function Layout({children}) {
         setOpen(false);
     };
 
+    const handleLogout = () => {
+        logout();
+        setOpen(open);
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -135,6 +142,11 @@ export default function Layout({children}) {
                     <Typography variant="h6" noWrap>
                         UI Tricks in React
                     </Typography>
+                    { isLoggedIn() ? 
+                        <IconButton onClick={handleLogout}>
+                            Logout
+                        </IconButton> 
+                        : ''}
                 </Toolbar>
             </AppBar>
             <Drawer
