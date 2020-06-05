@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Redirect } from 'react-router-dom';
 import { setToken } from '../../config/auth';
 
 const style = {
@@ -41,9 +42,10 @@ export const Login = () => {
         }).then(response => {
             if(response.status === 200) {
                 setToken(response.headers.get('authentication'));
-                alert('Logged In!');
+                const redirComp = <Redirect to='/pokemon'/>
+                setMsg(redirComp);
             } else{
-                setMsg('Login Failed');
+                setMsg('Log In Failed');
             }
         })
     }
