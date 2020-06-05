@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -8,6 +8,7 @@ import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -18,7 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import StorageIcon from '@material-ui/icons/Storage';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import { isLoggedIn, logout } from '../config/auth';
 
@@ -86,6 +87,12 @@ const useStyles = makeStyles((theme) => ({
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
     },
+    toolbarButtons: {
+        marginLeft: 'auto',
+    },
+    linkButtons: {
+        textDecoration: 'none',
+    },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
@@ -103,7 +110,9 @@ function HomeIcon(props) {
 export default function Layout({children}) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+    const [redirComp, setRedirComp] = useState('')
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -113,13 +122,20 @@ export default function Layout({children}) {
         setOpen(false);
     };
 
-    const handleLogout = () => {
-        logout();
-        setOpen(open);
+    const handleLogout = async () => {
+        await logout();
+        setLoggedIn(isLoggedIn());
+        const redirect = < Redirect to='/' />
+        setRedirComp(redirect);
     }
+
+    useEffect(() => {
+        if (redirComp !== '') setRedirComp('');
+    }, [redirComp]);
 
     return (
         <div className={classes.root}>
+            {redirComp}
             <CssBaseline />
             <AppBar
                 position="fixed"
@@ -142,11 +158,23 @@ export default function Layout({children}) {
                     <Typography variant="h6" noWrap>
                         UI Tricks in React
                     </Typography>
-                    { isLoggedIn() ? 
-                        <IconButton onClick={handleLogout}>
+                    { loggedIn ? 
+                        <Button className={classes.toolbarButtons} onClick={handleLogout}>
                             Logout
-                        </IconButton> 
-                        : ''}
+                        </Button> 
+                        : 
+                        <span className={classes.toolbarButtons}>
+                            <Link to='/login' className={classes.linkButtons}>
+                                <Button>
+                                    Login
+                                </Button>
+                            </Link> 
+                            {/* <Link to='/signup' className={classes.linkButtons}>
+                                <Button>
+                                    Signup
+                                </Button>
+                            </Link>  */}
+                        </span> }
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -182,15 +210,22 @@ export default function Layout({children}) {
                         </ListItem>
                     </Link>
                 </List>
-                <Divider />
-                <List>
-                    <Link to='/Accounts' style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <ListItem key={'accounts'}>
-                            <ListItemIcon><PersonOutlineIcon /></ListItemIcon>
-                            <ListItemText primary={'Accounts'} />
-                        </ListItem>
-                    </Link>
-                </List>
+                { isLoggedIn() ? 
+                    <> 
+                        <Divider />
+                        <List>
+                            <Link to='/Accounts' style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <ListItem key={'accounts'}>
+                                    <ListItemIcon><PersonOutlineIcon /></ListItemIcon>
+                                    <ListItemText primary={'Accounts'} />
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </>
+                    : 
+                    ''
+                }
+                
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />

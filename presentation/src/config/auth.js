@@ -5,7 +5,7 @@ export const isLoggedIn = () => {
 }
 
 export const logout = () => {
-    localStorage.removeItem('auth');
+    return localStorage.removeItem('auth');
 }
 
 // Stores the Auth Token in LocalStorage

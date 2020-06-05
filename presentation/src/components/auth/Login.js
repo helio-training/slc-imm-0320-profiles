@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom';
 import { setToken } from '../../config/auth';
+import '../../styles/login.css';
 
-const style = {
-    marginLeft : '3px',
-    color: 'red'
-}
 // HandleSubmit saves to LocalStorage if remembered
 // OnMount check LocalStorage for remembered Email
 export const Login = () => {
@@ -45,13 +42,13 @@ export const Login = () => {
                 const redirComp = <Redirect to='/pokemon'/>
                 setMsg(redirComp);
             } else{
-                setMsg('Log In Failed');
+                setMsg('Login Failed');
             }
         })
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="login" onSubmit={handleSubmit}>
             <input 
                 type="text" 
                 value={email}
@@ -64,14 +61,16 @@ export const Login = () => {
                 placeholder="Password"
                 onChange={({ target }) => setPassword(target.value)}
                 required/>
-            <input 
-                type="checkbox"  
-                name="remember"
-                checked={remembered}
-                onChange={toggle} />
-            <label for="remember">Remember Me</label>
+            <span>
+                <input
+                    type="checkbox"
+                    name="remember"
+                    checked={remembered}
+                    onChange={toggle} />
+                <label htmlFor="remember">Remember Me</label>
+            </span>
             <input type="submit" value="Login"/>
-            <span style={style}>{msg}</span>
+            <span className="msg">{msg}</span>
         </form>
     )
 }

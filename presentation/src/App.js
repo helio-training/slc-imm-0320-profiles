@@ -12,6 +12,7 @@ import Pokemon from './pages/Pokemon';
 import Accounts from './pages/Accounts';
 import { PokemonContext } from './context/poke-context';
 import data from './context/pokemon.json'
+import { Login } from './components/auth/Login';
 import './App.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path='/' component={Home} />
+          <Route exact path='/login' component={Login} />
           <Route exact path='/pokemon' component={Pokemon} />
           <PrivateRoute exact path='/accounts'>
             <Accounts/>
